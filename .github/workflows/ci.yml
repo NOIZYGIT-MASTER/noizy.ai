@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  drive-rescue:
+    name: drive-rescue end-to-end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Synthetic-drive pipeline test (audit, dry-run, execute, undo, tamper guard)
+        run: bash tools/drive-rescue/test_pipeline.sh
+
+  noizy-osx:
+    name: noizy-osx tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/noizy-osx
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: apps/noizy-osx/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm test
+      - run: npm run format:check
+
+  noizy-control:
+    name: noizy-control server syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: node --check apps/noizy-control/server/engr_keith_server.js
