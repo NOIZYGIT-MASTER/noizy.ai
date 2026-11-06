@@ -1,0 +1,37 @@
+# NOIZY Control — XcodeGen project spec
+# Generate the Xcode project on the GOD machine with:
+#   brew install xcodegen
+#   cd apps/noizy-control && xcodegen generate
+#   open NOIZYControl.xcodeproj
+name: NOIZYControl
+options:
+  bundleIdPrefix: ai.noizy
+  deploymentTarget:
+    macOS: "14.0"
+targets:
+  NOIZYControl:
+    type: application
+    platform: macOS
+    sources:
+      - Sources
+    entitlements:
+      path: NOIZYControl.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: NOIZY Control
+        LSApplicationCategoryType: public.app-category.music
+        # Lets Siri accept "Keith" in place of "NOIZY Control" in App Shortcut phrases.
+        INAlternativeAppNames:
+          - INAlternativeAppName: Keith
+          - INAlternativeAppName: NOIZY
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: ai.noizy.control
+        SWIFT_VERSION: "5.9"
+        MACOSX_DEPLOYMENT_TARGET: "14.0"
+        GENERATE_INFOPLIST_FILE: false
+        ENABLE_HARDENED_RUNTIME: true
